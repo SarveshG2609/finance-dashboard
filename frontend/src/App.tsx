@@ -1,3 +1,4 @@
+import { BarChart2, CreditCard, DollarSign, TrendingUp, Upload } from "lucide-react";
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles.css";
@@ -9,11 +10,12 @@ import { NetWorthPage } from "./pages/NetWorthPage";
 
 type Page = "networth" | "income" | "expenses" | "accounts" | "import";
 
-const MAIN_TABS: { id: Page; label: string }[] = [
-  { id: "networth", label: "Net Worth" },
-  { id: "income", label: "Income" },
-  { id: "expenses", label: "Expenses" },
-  { id: "accounts", label: "Accounts" },
+const TABS: { id: Page; label: string; Icon: React.ElementType }[] = [
+  { id: "networth",  label: "Net Worth", Icon: TrendingUp },
+  { id: "income",    label: "Income",    Icon: DollarSign },
+  { id: "expenses",  label: "Expenses",  Icon: BarChart2 },
+  { id: "accounts",  label: "Accounts",  Icon: CreditCard },
+  { id: "import",    label: "Import",    Icon: Upload },
 ];
 
 function App() {
@@ -21,10 +23,11 @@ function App() {
 
   return (
     <div className="app">
+      {/* ── Desktop top nav ── */}
       <nav className="topnav">
         <span className="nav-brand">Finance</span>
         <div className="nav-links">
-          {MAIN_TABS.map((t) => (
+          {TABS.filter(t => t.id !== "import").map((t) => (
             <button
               key={t.id}
               className={`nav-link ${page === t.id ? "active" : ""}`}
@@ -46,11 +49,25 @@ function App() {
 
       <main className="page-content">
         {page === "networth" && <NetWorthPage />}
-        {page === "income" && <IncomePage />}
+        {page === "income"   && <IncomePage />}
         {page === "expenses" && <ExpensesPage />}
         {page === "accounts" && <AccountsPage />}
-        {page === "import" && <ImportPage onDone={() => setPage("networth")} />}
+        {page === "import"   && <ImportPage onDone={() => setPage("networth")} />}
       </main>
+
+      {/* ── Mobile bottom nav ── */}
+      <nav className="bottomnav">
+        {TABS.map(({ id, label, Icon }) => (
+          <button
+            key={id}
+            className={`bottomnav-item ${page === id ? "active" : ""}`}
+            onClick={() => setPage(id)}
+          >
+            <Icon size={20} strokeWidth={page === id ? 2.2 : 1.8} />
+            <span>{label}</span>
+          </button>
+        ))}
+      </nav>
     </div>
   );
 }

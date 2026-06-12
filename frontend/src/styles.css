@@ -478,3 +478,118 @@ select option { background: var(--surface-2); }
 }
 .flag-name { color: var(--text-1); flex: 1; }
 .flag-age  { color: var(--text-3); flex-shrink: 0; font-variant-numeric: tabular-nums; }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOBILE BOTTOM NAVIGATION
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.bottomnav {
+  display: none; /* hidden on desktop — shown via media query below */
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: calc(60px + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--surface);
+  border-top: 1px solid var(--border-2);
+  z-index: 100;
+}
+
+.bottomnav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-3);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  padding: 8px 2px 4px;
+  transition: color 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.bottomnav-item.active { color: var(--accent); }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE — MOBILE (≤ 640px)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 640px) {
+
+  /* Bottom nav: show on mobile */
+  .bottomnav { display: flex; }
+
+  /* Top nav: brand only, hide tabs */
+  .topnav {
+    grid-template-columns: 1fr;
+    padding: 0 16px;
+    height: 48px;
+  }
+  .nav-links { display: none; }
+  .nav-import { display: none; }
+
+  /* Page content: tighter + room for bottom nav */
+  .page-content {
+    padding: 16px 12px calc(72px + env(safe-area-inset-bottom));
+  }
+
+  /* Panels */
+  .panel { padding: 16px 14px; border-radius: 10px; }
+
+  /* Net worth hero */
+  .net-worth-value { font-size: 30px; }
+  .net-worth-panel { padding: 20px 16px; }
+  .net-worth-panel::before { display: none; }
+
+  /* Asset grid: always 2 columns */
+  .asset-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .asset-card { padding: 14px 12px; }
+  .asset-value { font-size: 15px; }
+
+  /* Charts: shorter on mobile */
+  .recharts-wrapper, .recharts-surface { touch-action: pan-x; }
+
+  /* Transaction tables */
+  .txn-table { font-size: 12px; }
+  .txn-table th, .txn-table td { padding: 8px 8px; }
+  .txn-table .desc { max-width: 140px; }
+
+  /* Section headings */
+  h2 { font-size: 17px; }
+
+  /* Month nav (income/expenses) */
+  .month-nav { gap: 8px; }
+
+  /* Form rows stack on mobile */
+  .form-row { flex-direction: column; }
+  .form-row .field { min-width: unset; width: 100%; }
+
+  /* Data flags: wrap date below name */
+  .data-flag-row { flex-wrap: wrap; row-gap: 2px; }
+  .flag-age { width: 100%; padding-left: 0; font-size: 11px; }
+
+  /* Summary cards in import preview */
+  .summary-grid { gap: 8px; }
+  .summary-card { min-width: 100px; }
+
+  /* Account cards in expenses */
+  .account-balance { font-size: 18px; }
+
+  /* Breakdown rows in net worth */
+  .breakdown-row { font-size: 13px; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   RESPONSIVE — SMALL PHONES (≤ 390px)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 390px) {
+  .net-worth-value { font-size: 26px; }
+  .asset-value { font-size: 13px; }
+  .bottomnav-item { font-size: 9px; }
+  .page-content { padding-left: 10px; padding-right: 10px; }
+}
