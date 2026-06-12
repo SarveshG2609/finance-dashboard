@@ -9,3 +9,4 @@ data/*.sqlite3
 uploads/
 PASSWORDS.txt
 .env
+credentials/

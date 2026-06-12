@@ -1,16 +1,56 @@
-import { AlertCircle, CheckCircle, Upload } from "lucide-react";
+import { AlertCircle, CheckCircle, Clock, Upload } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import {
   type ConfirmResponse,
+  type DataFlag,
   type PreviewResponse,
   type SourceDef,
   confirmImport,
   formatINR,
+  getDataFlags,
   getSources,
   previewImport,
 } from "../api";
 
 type Step = "idle" | "previewing" | "preview" | "confirming" | "done";
+
+function DataFlagsPanel() {
+  const [flags, setFlags] = useState<DataFlag[]>([]);
+
+  useEffect(() => {
+    getDataFlags().then(setFlags).catch(() => {});
+  }, []);
+
+  if (flags.length === 0) return null;
+
+  const ACCOUNT_LABELS: Record<string, string> = {
+    bank: "Bank",
+    credit_card: "Credit Card",
+    broker: "Broker",
+  };
+
+  return (
+    <div className="data-flags-panel">
+      <div className="data-flags-header">
+        <Clock size={13} />
+        <span>Stale data — {flags.length} account{flags.length !== 1 ? "s" : ""} not updated in over 45 days</span>
+      </div>
+      <div className="data-flags-list">
+        {flags.map((f) => (
+          <div key={f.account_id} className="data-flag-row">
+            <span className="flag-badge">{ACCOUNT_LABELS[f.account_type] ?? f.account_type}</span>
+            <span className="flag-name">{f.institution} — {f.account_name}</span>
+            <span className="flag-age">
+              {f.last_date
+                ? `last: ${f.last_date} (${f.days_since}d ago)`
+                : "no data imported"}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export function ImportPage({ onDone }: { onDone: () => void }) {
   const [sources, setSources] = useState<SourceDef[]>([]);
@@ -99,6 +139,7 @@ export function ImportPage({ onDone }: { onDone: () => void }) {
 
   return (
     <div className="panel">
+      <DataFlagsPanel />
       <h2>Import Statement</h2>
 
       {step === "previewing" || step === "confirming" ? (

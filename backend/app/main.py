@@ -13,6 +13,7 @@ from app.models import ManualAsset, new_id, utc_now
 from app.parsers.base import ParsedStatement
 from app.services.accounts_overview import get_accounts_overview
 from app.services.dashboard import get_summary
+from app.services.data_flags import get_data_flags
 from app.services.expenses import get_expenses_summary
 from app.services.import_confirm import confirm_import
 from app.services.import_preview import preview_import
@@ -115,6 +116,11 @@ def dashboard_income(db: Session = Depends(get_db)):
 @app.get("/dashboard/expenses")
 def dashboard_expenses(db: Session = Depends(get_db)):
     return get_expenses_summary(db)
+
+
+@app.get("/dashboard/data-flags")
+def dashboard_data_flags(db: Session = Depends(get_db)):
+    return get_data_flags(db)
 
 
 @app.get("/manual-assets")

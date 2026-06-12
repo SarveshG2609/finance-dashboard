@@ -16,6 +16,7 @@ from app.parsers.hdfc_bank import parse_hdfc_bank_pdf
 from app.parsers.hdfc_card import parse_hdfc_card_pdf
 from app.parsers.icici_card import parse_icici_card_pdf
 from app.parsers.kotak_bank import parse_kotak_bank_pdf
+from app.parsers.kotak_card import parse_kotak_card_pdf
 from app.parsers.sbi_card import parse_sbi_card_pdf
 from app.parsers.zerodha import parse_zerodha_xlsx
 
@@ -34,6 +35,7 @@ _REGISTRY: list[SourceSpec] = [
     SourceSpec("hdfc_card",    "HDFC Credit Card",                     True,  ".pdf",  parse_hdfc_card_pdf),
     SourceSpec("sbi_card",     "SBI Credit Card",                      True,  ".pdf",  parse_sbi_card_pdf),
     SourceSpec("kotak_bank",   "Kotak Bank – Savings Account",         True,  ".pdf",  parse_kotak_bank_pdf),
+    SourceSpec("kotak_card",   "Kotak White Credit Card",              True,  ".pdf",  parse_kotak_card_pdf),
     SourceSpec("icici_card",   "ICICI Credit Card",                    True,  ".pdf",  parse_icici_card_pdf),
     SourceSpec("zerodha",      "Zerodha – Equity P&L (XLSX)",          False, ".xlsx", parse_zerodha_xlsx),
     SourceSpec("groww_stocks", "Groww – Stock Holdings (XLSX)",        False, ".xlsx", parse_groww_stocks_xlsx),

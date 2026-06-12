@@ -344,6 +344,21 @@ export async function getExpensesSummary(): Promise<ExpensesSummary> {
   return res.json();
 }
 
+export interface DataFlag {
+  account_id: string;
+  account_name: string;
+  institution: string;
+  account_type: string;
+  last_date: string | null;
+  days_since: number | null;
+}
+
+export async function getDataFlags(): Promise<DataFlag[]> {
+  const res = await fetch(api("/dashboard/data-flags"));
+  if (!res.ok) throw new Error("Failed to load data flags");
+  return res.json();
+}
+
 export const formatINR = (n: number) =>
   new Intl.NumberFormat("en-IN", {
     style: "currency",

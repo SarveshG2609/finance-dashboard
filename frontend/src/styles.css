@@ -437,3 +437,44 @@ select option { background: var(--surface-2); }
 .warning-box ul { margin: 0; padding-left: 16px; }
 
 .success-icon { text-align: center; margin-bottom: 12px; }
+
+/* ── Data Flags ─────────────────────────────────────────────────────────── */
+.data-flags-panel {
+  background: rgba(200, 169, 110, 0.06);
+  border: 1px solid rgba(200, 169, 110, 0.18);
+  border-radius: 8px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.data-flags-header {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 14px;
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  border-bottom: 1px solid rgba(200, 169, 110, 0.12);
+}
+.data-flags-list { padding: 6px 0; }
+.data-flag-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+  font-size: 12px;
+}
+.flag-badge {
+  flex-shrink: 0;
+  background: rgba(200, 169, 110, 0.12);
+  color: var(--gold);
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.flag-name { color: var(--text-1); flex: 1; }
+.flag-age  { color: var(--text-3); flex-shrink: 0; font-variant-numeric: tabular-nums; }
