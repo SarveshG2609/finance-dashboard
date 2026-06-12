@@ -133,13 +133,12 @@ export interface BankAccountSnapshot {
 export interface NetWorthBreakdown {
   bank_balance: number;
   bank_accounts: BankAccountSnapshot[];
+  equity: number;
   mutual_funds: number;
-  gold_etf: number;
-  silver_etf: number;
-  stocks: number;
   manual_assets: number;
   liabilities: number;
   total: number;
+  is_imputed: boolean;
 }
 
 export interface NetWorthTrendPoint {
@@ -148,10 +147,9 @@ export interface NetWorthTrendPoint {
   bank: number;
   bank_accounts: BankAccountSnapshot[];
   investments: number;
+  equity: number;
   mutual_funds: number;
-  gold_etf: number;
-  silver_etf: number;
-  stocks: number;
+  is_imputed: boolean;
   manual: number;
 }
 

@@ -3,8 +3,7 @@ from datetime import date
 
 from sqlalchemy.orm import Session
 
-from app.models import Account, BankTransaction, BrokerHolding, ManualAsset
-from app.services.asset_classifier import classify_holding
+from app.models import Account, BankTransaction, ManualAsset, PortfolioSnapshot
 
 
 def get_networth_summary(db: Session, months: int = 12) -> dict:
@@ -44,33 +43,20 @@ def _bank_breakdown(db: Session, as_of: date) -> tuple[float, list[dict]]:
 
 # ── Investments ───────────────────────────────────────────────────────────────
 
-def _investments_breakdown(db: Session, as_of: date) -> dict:
-    """Investment value by asset class using most-recent holding per symbol up to as_of."""
-    holdings = db.query(BrokerHolding).filter(BrokerHolding.as_of_date <= as_of).all()
-    seen: dict[str, BrokerHolding] = {}
-    for h in holdings:
-        key = f"{h.broker}:{h.symbol_or_name}"
-        if key not in seen or h.as_of_date > seen[key].as_of_date:
-            seen[key] = h
-
-    mf = gold = silver = stocks = 0.0
-    for h in seen.values():
-        kind = classify_holding(h.symbol_or_name, h.isin)
-        v = h.current_or_sell_value
-        if kind == "mutual_fund":
-            mf += v
-        elif kind == "gold_etf":
-            gold += v
-        elif kind == "silver_etf":
-            silver += v
-        else:
-            stocks += v
-
+def _investments_breakdown(db: Session, month_str: str) -> dict:
+    """Return equity + mf values from the nearest PortfolioSnapshot on or before month_str."""
+    snap = (
+        db.query(PortfolioSnapshot)
+        .filter(PortfolioSnapshot.month <= month_str)
+        .order_by(PortfolioSnapshot.month.desc())
+        .first()
+    )
+    if not snap:
+        return {"equity": 0.0, "mutual_funds": 0.0, "is_imputed": False}
     return {
-        "mutual_funds": round(mf, 2),
-        "gold_etf": round(gold, 2),
-        "silver_etf": round(silver, 2),
-        "stocks": round(stocks, 2),
+        "equity": round(snap.equity_value, 2),
+        "mutual_funds": round(snap.mf_value, 2),
+        "is_imputed": snap.is_imputed,
     }
 
 
@@ -90,18 +76,19 @@ def _manual_totals(db: Session, as_of: date) -> tuple[float, float]:
 # ── Aggregates ────────────────────────────────────────────────────────────────
 
 def _current_breakdown(db: Session, today: date) -> dict:
+    month_str = today.strftime("%Y-%m")
     bank_balance, bank_accounts = _bank_breakdown(db, today)
-    inv = _investments_breakdown(db, today)
+    inv = _investments_breakdown(db, month_str)
     manual_assets, liabilities = _manual_totals(db, today)
 
-    total = (bank_balance
-             + inv["mutual_funds"] + inv["gold_etf"] + inv["silver_etf"] + inv["stocks"]
-             + manual_assets - liabilities)
+    total = bank_balance + inv["equity"] + inv["mutual_funds"] + manual_assets - liabilities
 
     return {
         "bank_balance": bank_balance,
         "bank_accounts": bank_accounts,
-        **inv,
+        "equity": inv["equity"],
+        "mutual_funds": inv["mutual_funds"],
+        "is_imputed": inv["is_imputed"],
         "manual_assets": round(manual_assets, 2),
         "liabilities": round(liabilities, 2),
         "total": round(total, 2),
@@ -113,20 +100,23 @@ def _monthly_trend(db: Session, today: date, months: int) -> list[dict]:
     year, month = today.year, today.month
 
     for _ in range(months):
+        month_str = f"{year}-{month:02d}"
         month_end = date(year, month, monthrange(year, month)[1])
         bank, bank_accounts = _bank_breakdown(db, month_end)
-        inv = _investments_breakdown(db, month_end)
+        inv = _investments_breakdown(db, month_str)
         manual_assets, liabilities = _manual_totals(db, month_end)
-        investments = inv["mutual_funds"] + inv["gold_etf"] + inv["silver_etf"] + inv["stocks"]
+        investments = inv["equity"] + inv["mutual_funds"]
         total = bank + investments + manual_assets - liabilities
 
         trend.append({
-            "month": f"{year}-{month:02d}",
+            "month": month_str,
             "total": round(total, 2),
             "bank": round(bank, 2),
             "bank_accounts": bank_accounts,
             "investments": round(investments, 2),
-            **{k: round(v, 2) for k, v in inv.items()},
+            "equity": inv["equity"],
+            "mutual_funds": inv["mutual_funds"],
+            "is_imputed": inv["is_imputed"],
             "manual": round(manual_assets - liabilities, 2),
         })
         month -= 1

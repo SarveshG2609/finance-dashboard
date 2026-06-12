@@ -9,6 +9,7 @@ class SourceKind(str, Enum):
     BANK = "bank"
     CREDIT_CARD = "credit_card"
     BROKER_PNL = "broker_pnl"
+    PORTFOLIO = "portfolio"
 
 
 class BankTransactionRow(BaseModel):
@@ -60,8 +61,17 @@ class BrokerHoldingRow(BaseModel):
     unrealized_pnl: float = 0
 
 
+class PortfolioSnapshotRow(BaseModel):
+    row_type: Literal["portfolio_snapshot"] = "portfolio_snapshot"
+    month: str               # "YYYY-MM"
+    total_value: float
+    equity_value: float      # stocks + ETFs held in demat
+    mf_value: float          # mutual funds (folio + demat combined)
+    is_imputed: bool         # True = split estimated from current-month ratio
+
+
 AnyRow = Annotated[
-    BankTransactionRow | CardTransactionRow | BrokerSummaryRow | BrokerHoldingRow,
+    BankTransactionRow | CardTransactionRow | BrokerSummaryRow | BrokerHoldingRow | PortfolioSnapshotRow,
     Field(discriminator="row_type"),
 ]
 

@@ -91,10 +91,8 @@ export function NetWorthPage() {
 
   const assetCards = [
     { label: "Bank Balance",  value: current.bank_balance,  color: "#6366F1" },
+    { label: "Equity",        value: current.equity,        color: "#2ECC8E" },
     { label: "Mutual Funds",  value: current.mutual_funds,  color: "#8B5CF6" },
-    { label: "Gold ETF",      value: current.gold_etf,      color: "#C8A96E" },
-    { label: "Silver ETF",    value: current.silver_etf,    color: "#94A3B8" },
-    { label: "Stocks",        value: current.stocks,        color: "#2ECC8E" },
     { label: "Other Assets",  value: current.manual_assets, color: "#0EA5E9" },
     { label: "Liabilities",   value: -current.liabilities,  color: "#E05C5C" },
   ].filter((c) => c.value !== 0);
@@ -330,11 +328,14 @@ function BreakdownList({ snap, selectedMonth }: { snap: NetWorthTrendPoint; sele
       {/* Investments */}
       {snap.investments > 0 && (
         <>
-          <BreakdownRow label="Investments" value={snap.investments} color="#C8A96E" />
+          <BreakdownRow
+            label="Investments"
+            value={snap.investments}
+            color="#C8A96E"
+            note={snap.is_imputed ? "estimated split" : undefined}
+          />
+          {snap.equity > 0 && <BreakdownRow label="Equity" value={snap.equity} indent />}
           {snap.mutual_funds > 0 && <BreakdownRow label="Mutual Funds" value={snap.mutual_funds} indent />}
-          {snap.stocks > 0 && <BreakdownRow label="Stocks" value={snap.stocks} indent />}
-          {snap.gold_etf > 0 && <BreakdownRow label="Gold ETF" value={snap.gold_etf} indent />}
-          {snap.silver_etf > 0 && <BreakdownRow label="Silver ETF" value={snap.silver_etf} indent />}
         </>
       )}
 

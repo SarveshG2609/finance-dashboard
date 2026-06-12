@@ -1,7 +1,7 @@
 from datetime import date, datetime, timezone
 from uuid import uuid4
 
-from sqlalchemy import Date, DateTime, Float, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, Date, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -129,6 +129,26 @@ class IncomeEntry(Base):
     source_name: Mapped[str] = mapped_column(String, nullable=False)
     amount: Mapped[float] = mapped_column(Float, nullable=False)
     account_name: Mapped[str | None] = mapped_column(String)
+    notes: Mapped[str | None] = mapped_column(Text)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
+
+
+class PortfolioSnapshot(Base):
+    """Monthly aggregate investment values parsed from eCAS statements.
+
+    is_imputed=True means the equity/mf split was estimated from the ratio of
+    the statement month; is_imputed=False means it came from actual CAS data.
+    Actual data always wins over imputed on re-import.
+    """
+    __tablename__ = "portfolio_snapshots"
+
+    id: Mapped[str] = mapped_column(String, primary_key=True, default=new_id)
+    import_batch_id: Mapped[str] = mapped_column(ForeignKey("import_batches.id"), nullable=False)
+    month: Mapped[str] = mapped_column(String, nullable=False, index=True)  # "YYYY-MM"
+    equity_value: Mapped[float] = mapped_column(Float, default=0)
+    mf_value: Mapped[float] = mapped_column(Float, default=0)
+    total_value: Mapped[float] = mapped_column(Float, default=0)
+    is_imputed: Mapped[bool] = mapped_column(Boolean, default=False)
     notes: Mapped[str | None] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utc_now)
 

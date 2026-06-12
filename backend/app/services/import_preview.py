@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Callable
 
 from app.parsers.base import ParsedStatement
+from app.parsers.ecas import parse_ecas_pdf
 from app.parsers.groww import parse_groww_mf_xlsx, parse_groww_stocks_xlsx
 from app.parsers.hdfc_bank import parse_hdfc_bank_pdf
 from app.parsers.hdfc_card import parse_hdfc_card_pdf
@@ -37,6 +38,7 @@ _REGISTRY: list[SourceSpec] = [
     SourceSpec("kotak_bank",   "Kotak Bank – Savings Account",         True,  ".pdf",  parse_kotak_bank_pdf),
     SourceSpec("kotak_card",   "Kotak White Credit Card",              True,  ".pdf",  parse_kotak_card_pdf),
     SourceSpec("icici_card",   "ICICI Credit Card",                    True,  ".pdf",  parse_icici_card_pdf),
+    SourceSpec("ecas",         "eCAS – Monthly Portfolio Statement",   True,  ".pdf",  parse_ecas_pdf),
     SourceSpec("zerodha",      "Zerodha – Equity P&L (XLSX)",          False, ".xlsx", parse_zerodha_xlsx),
     SourceSpec("groww_stocks", "Groww – Stock Holdings (XLSX)",        False, ".xlsx", parse_groww_stocks_xlsx),
     SourceSpec("groww_mf",     "Groww – Mutual Fund Holdings (XLSX)",  False, ".xlsx", parse_groww_mf_xlsx),
