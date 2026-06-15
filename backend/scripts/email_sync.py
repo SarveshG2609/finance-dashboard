@@ -45,7 +45,7 @@ SENDER_MAP: dict[str, tuple[str, str | None]] = {
     # SBI Credit Card
     "statements@sbicard.com":                       ("sbi_card",   "260920023025"),
     # Kotak White Credit Card
-    "cardstatement@kotak.com":                      ("kotak_card", "sarv2609"),
+    "cardstatement@kotak.bank.in":                  ("kotak_card", "sarv2609"),
     # ICICI Sapphiro Credit Cards
     "credit_cards@icicibank.com":                   ("icici_card", "sarv2609"),
     # HDFC Swiggy + Tata Neu Credit Cards
