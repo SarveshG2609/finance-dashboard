@@ -56,7 +56,22 @@ TABLE_ORDER = [
     "broker_holdings",
     "income_entries",
     "manual_assets",
+    "portfolio_snapshots",
 ]
+
+# SQLite stores booleans as 0/1; Postgres needs True/False.
+# Map table → set of column names that are boolean in the Postgres schema.
+BOOL_COLS: dict[str, set[str]] = {
+    "portfolio_snapshots": {"is_imputed"},
+}
+
+
+def _coerce_row(table: str, row: dict) -> dict:
+    bools = BOOL_COLS.get(table, set())
+    if not bools:
+        return row
+    return {k: (bool(v) if k in bools and v is not None else v) for k, v in row.items()}
+
 
 # ── Copy ───────────────────────────────────────────────────────────────────
 with sqlite_engine.connect() as src, pg_engine.connect() as dst:
@@ -76,7 +91,7 @@ with sqlite_engine.connect() as src, pg_engine.connect() as dst:
 
         inserted = 0
         for row in rows:
-            result = dst.execute(stmt, dict(row))
+            result = dst.execute(stmt, _coerce_row(table, dict(row)))
             inserted += result.rowcount
 
         dst.commit()
