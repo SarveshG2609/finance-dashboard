@@ -192,4 +192,9 @@ def run_sync(days_back: int = 10):
 
 
 if __name__ == "__main__":
-    run_sync()
+    import argparse
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--days-back", type=int, default=10,
+                    help="How many days back to search Gmail (default 10 for weekly runs; use 180 for initial historical load)")
+    args = ap.parse_args()
+    run_sync(days_back=args.days_back)

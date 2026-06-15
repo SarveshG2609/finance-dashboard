@@ -8,5 +8,6 @@ data/*.sqlite
 data/*.sqlite3
 uploads/
 PASSWORDS.txt
+EMAIL_SOURCES.txt
 .env
 credentials/
