@@ -153,7 +153,12 @@ def _infer_classification(description: str, withdrawal: float, deposit: float) -
     upper = description.upper()
     if withdrawal > 0 and any(token in upper for token in ["CRED CLUB", "CC PAYMENT", "CREDIT CARD", "BBPS"]):
         return "card_settlement"
-    if any(token in upper for token in ["ZERODHA", "GROWW", "NSE CLEARING", "BSE LTD"]):
+    if any(token in upper for token in [
+        "ZERODHA", "GROWW", "NSE CLEARING", "BSE LTD",
+        "NEXT BILLION",    # Groww's bank transfer name
+        "FOURDEGREE",      # Wint Wealth (bond investments)
+        "WINT",
+    ]):
         return "investment_transfer"
     if withdrawal > 0:
         return "expense"
