@@ -221,7 +221,7 @@ def _infer_classification(desc: str, withdrawal: float, deposit: float) -> str:
         return "card_settlement"
     if any(kw in upper for kw in [
         "ZERODHA", "GROWW", "NSE CLEARING", "BSE",
-        "NEXT BILLION",    # Groww's bank transfer name
+        "NEXT BILLION", "NEXTBILLION",    # Groww's bank transfer name
         "FOURDEGREE",      # Wint Wealth (bond investments)
         "WINT",
     ]):

@@ -155,7 +155,7 @@ def _infer_classification(description: str, withdrawal: float, deposit: float) -
         return "card_settlement"
     if any(token in upper for token in [
         "ZERODHA", "GROWW", "NSE CLEARING", "BSE LTD",
-        "NEXT BILLION",    # Groww's bank transfer name
+        "NEXT BILLION", "NEXTBILLION",    # Groww's bank transfer name
         "FOURDEGREE",      # Wint Wealth (bond investments)
         "WINT",
     ]):
