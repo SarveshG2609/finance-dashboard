@@ -88,7 +88,7 @@ def get_expenses_summary(db: Session, months: int = 6) -> dict:
     }
 
     # ── Bank withdrawals (not card payments or investment transfers) ──────────
-    EXCLUDED_CLASSIFICATIONS = {"card_settlement", "investment_transfer"}
+    EXCLUDED_CLASSIFICATIONS = {"card_settlement", "investment_transfer", "self_transfer"}
     bank_txns = [
         t for t in db.query(BankTransaction).filter(BankTransaction.withdrawal > 0).all()
         if not _is_card_payment(t.description)

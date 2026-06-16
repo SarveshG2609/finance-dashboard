@@ -224,8 +224,11 @@ def _infer_classification(desc: str, withdrawal: float, deposit: float) -> str:
         "NEXT BILLION", "NEXTBILLION",    # Groww's bank transfer name
         "FOURDEGREE",      # Wint Wealth (bond investments)
         "WINT",
+        "FD BOOKED", "FD/BOOKED",         # Fixed deposit booking
     ]):
         return "investment_transfer"
+    if "HDFCX5110" in upper:              # Own HDFC savings account (IMPS self-transfer)
+        return "self_transfer"
     if withdrawal > 0:
         return "expense"
     if deposit > 0:
